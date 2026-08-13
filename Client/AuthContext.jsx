@@ -1,35 +1,15 @@
-import { createContext, useEffect, useState } from "react";
-import { getCurrentUser } from "../services/authService";
+import { createContext, useContext, useState } from "react";
 
-export const AuthContext = createContext();
+const AuthContext = createContext(null);
 
-const AuthProvider = ({ children }) => {
+export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const data = await getCurrentUser();
-        setUser(data.user || data);
-      } catch (error) {
-        console.error("Auth initialization error:", error);
-        localStorage.removeItem("token"); // ইনভ্যালিড টোকেন থাকলে ডিলিট করে দেওয়া
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (localStorage.getItem("token")) {
-      loadUser();
-    } else {
-      setLoading(false);
-    }
-  }, []);
+  const login = (userData) => {
+    setUser(userData);
+  };
 
   const logout = () => {
-    localStorage.removeItem("token");
     setUser(null);
   };
 
@@ -38,13 +18,24 @@ const AuthProvider = ({ children }) => {
       value={{
         user,
         setUser,
-        loading,
+        login,
         logout,
+        isAuthenticated: !!user,
       }}
     >
       {children}
     </AuthContext.Provider>
   );
-};
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+
+  if (!context) {
+    throw new Error("useAuth must be used inside AuthProvider");
+  }
+
+  return context;
+}
 
 export default AuthProvider;
