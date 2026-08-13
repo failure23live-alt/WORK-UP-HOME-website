@@ -16,9 +16,9 @@ import ProtectedRoute from "./ProtectedRoute";
 // PUBLIC PAGES
 // ==================================================
 
-import Home from "../pages/Home/Home";
-import Login from "../pages/Login/Login";
-import Register from "../pages/Register/Register";
+import Home from "./pages/Home/Home";
+import Login from "./pages/Login/Login";
+import Register from "./pages/Register/Register";
 
 // ==================================================
 // DASHBOARD PAGES
